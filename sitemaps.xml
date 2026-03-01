@@ -5,19 +5,19 @@
       <priority>1.0</priority>
    </url>
    <url>
-      <loc>https://sakhi-dev.github.io/SNetPro/#services</loc>
+      <loc>https://sakhi-dev.github.io/SNetPro/services.html</loc>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://sakhi-dev.github.io/SNetPro/#portfolio</loc>
+      <loc>https://sakhi-dev.github.io/SNetPro/portfolio.html</loc>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://sakhi-dev.github.io/SNetPro/#pricing</loc>
+      <loc>https://sakhi-dev.github.io/SNetPro/pricing.html</loc>
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://sakhi-dev.github.io/SNetPro/#contact</loc>
+      <loc>https://sakhi-dev.github.io/SNetPro/contact.html</loc>
       <priority>0.9</priority>
    </url>
 </urlset>
