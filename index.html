@@ -1199,7 +1199,7 @@ footer{background:#050508;color:rgba(245,242,235,.5);padding:4rem;display:grid;g
           </div>
         </div>
         <div class="form-group">
-          <!-- <label><span data-ar>الميزانية</span><span data-fr>Budget</span></label> -->
+          <label><span data-ar>الميزانية</span><span data-fr>Budget</span></label>
           <select id="clientBudget">
             <option value=""><span data-ar>اختر...</span><span data-fr>Choisir...</span></option>
             <option value="أقل29000 000 دج"><span data-ar>أقل29000 دج</span><span data-fr>Moins de 30 000 DZD</span></option>
@@ -1274,7 +1274,8 @@ footer{background:#050508;color:rgba(245,242,235,.5);padding:4rem;display:grid;g
   <span><span data-ar>الجزائر 🇩🇿</span><span data-fr>Algérie 🇩🇿</span></span>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
 var currentLang='ar';
 function setLang(lang){
   currentLang=lang;
@@ -1321,23 +1322,65 @@ function filterPortfolio(cat,btn){
     else{item.classList.add('hidden');item.classList.remove('visible');}
   });
 }
+// ===== EMAILJS CONFIG =====
+// ⚙️ ضع مفاتيحك الثلاثة هنا بعد تسجيلك في emailjs.com
+var EJS_PUBLIC_KEY  = 'NNr7kYRbwQjkIkM3q';   // ← من Account → General
+var EJS_SERVICE_ID  = 'service_8531n2n';   // ← من Email Services
+var EJS_TEMPLATE_ID = 'template_htbprvd';  // ← من Email Templates
+
+emailjs.init({ publicKey: EJS_PUBLIC_KEY });
+
 // FORM
 function sendForm(){
-  var name=document.getElementById('clientName').value.trim();
-  var phone=document.getElementById('clientPhone').value.trim();
-  var email=document.getElementById('clientEmail').value.trim();
-  var sector=document.getElementById('clientSector').value;
-  var type=document.getElementById('clientType').value;
-  var budget=document.getElementById('clientBudget').value;
-  var msg=document.getElementById('clientMessage').value.trim();
-  if(!name||!phone||!email){alert(currentLang==='fr'?'Veuillez remplir les champs obligatoires':'يرجى ملء الحقول المطلوبة');return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert(currentLang==='fr'?'E-mail invalide':'بريد إلكتروني غير صحيح');return;}
-  document.getElementById('submitBtn').disabled=true;
-  document.getElementById('submitText').textContent='⏳ '+(currentLang==='fr'?'Envoi...':'جاري الإرسال...');
-  var subj=encodeURIComponent('SnetProDz — '+(currentLang==='fr'?'Nouvelle demande de ':'طلب جديد من ')+name);
-  var body=encodeURIComponent('Bonjour / مرحبا Sakhi,\n\n'+name+'\n'+phone+'\n'+email+'\n\nSecteur/القطاع: '+(sector||'-')+'\nType/نوع: '+(type||'-')+'\\nBudget: '+(budget||'-')+'\\n\\n'+(msg||'-')+'\\n\\n— SnetProDz');
-  window.location.href='mailto:sakhi.abderrahmen@outlook.fr?subject='+subj+'&body='+body;
-  setTimeout(function(){document.getElementById('formContent').style.display='none';document.getElementById('formSuccess').classList.add('show');},1200);
+  var name   = document.getElementById('clientName').value.trim();
+  var phone  = document.getElementById('clientPhone').value.trim();
+  var email  = document.getElementById('clientEmail').value.trim();
+  var sector = document.getElementById('clientSector').value;
+  var type   = document.getElementById('clientType').value;
+  var budget = document.getElementById('clientBudget').value;
+  var msg    = document.getElementById('clientMessage').value.trim();
+
+  // Validation
+  if(!name||!phone||!email){
+    alert(currentLang==='fr'?'Veuillez remplir les champs obligatoires':'يرجى ملء الحقول المطلوبة');
+    return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert(currentLang==='fr'?'E-mail invalide':'بريد إلكتروني غير صحيح');
+    return;
+  }
+
+  var btn = document.getElementById('submitBtn');
+  var txt = document.getElementById('submitText');
+  btn.disabled = true;
+  txt.textContent = '⏳ '+(currentLang==='fr'?'Envoi en cours...':'جاري الإرسال...');
+
+  // بيانات Template
+  var params = {
+    from_name : name,
+    phone     : phone,
+    reply_to  : email,
+    sector    : sector || '—',
+    site_type : type   || '—',
+    budget    : budget || '—',
+    message   : msg    || '—'
+  };
+
+  emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_ID, params)
+    .then(function(){
+      // نجح الإرسال ✅
+      document.getElementById('formContent').style.display = 'none';
+      document.getElementById('formSuccess').classList.add('show');
+    })
+    .catch(function(err){
+      // فشل → نبلّغ المستخدم
+      console.error('EmailJS error:', err);
+      btn.disabled = false;
+      txt.innerHTML = '🚀 <span data-ar>إرسال الطلب</span><span data-fr>Envoyer la demande</span>';
+      alert(currentLang==='fr'
+        ? 'Erreur lors de l\'envoi. Contactez-nous sur WhatsApp.'
+        : 'حدث خطأ في الإرسال. تواصل معنا عبر واتساب.');
+    });
 }
 </script>
 </body>
