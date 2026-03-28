@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://SNetPeoDz.com/sitemap.xml
+Sitemap: https://snetpeodz.com/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 10
